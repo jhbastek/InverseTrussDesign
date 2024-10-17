@@ -88,7 +88,7 @@ if __name__ == '__main__':
         for i, list in enumerate(top_full_target_pred):
             temp = torch.stack(list[:-stored_pred-1:-1])
             num_predictions = temp.shape[0]
-            temp = torch.cat((torch.zeros(num_predictions,1)+i+1,temp),dim=1)
+            temp = torch.cat((torch.zeros(num_predictions,1,device=device)+i+1,temp),dim=1)
             selected_full_target_pred[i,0:temp.shape[0]] = temp
 
         # select the n best lattice stiffnesses corresponding to the best designs
@@ -96,7 +96,7 @@ if __name__ == '__main__':
         for i, list in enumerate(top_C_target_pred_pred):
             temp = torch.stack(list[:-stored_pred-1:-1])
             num_predictions = temp.shape[0]
-            temp = torch.cat((torch.zeros(num_predictions,1)+i+1,temp),dim=1)
+            temp = torch.cat((torch.zeros(num_predictions,1,device=device)+i+1,temp),dim=1)
             selected_C_target_pred_pred[i,0:num_predictions] = temp
 
         # flatten and delete zero-rows
@@ -128,7 +128,7 @@ if __name__ == '__main__':
 
         # add sample index to C_target
         C_target = torch.unique_consecutive(C_target, dim=0)
-        C_target = torch.cat((torch.unsqueeze(torch.tensor(np.arange(num_samples)+1),1),C_target),dim=1)
+        C_target = torch.cat((torch.unsqueeze(torch.tensor(np.arange(num_samples)+1,device=device),1),C_target),dim=1)
 
         # unnormalize stiffness by Young's modulus of base material
         C_target[:,1:] *= E
